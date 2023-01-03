@@ -12,10 +12,6 @@ inputImage.addEventListener('change', (e) => {
         canvas.width = image1.width;
         ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
 
-
-
-
-
         const scannedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const greyScaleImage = scannedImage;
 
@@ -125,6 +121,6 @@ inputImage.addEventListener('change', (e) => {
             }
         }
 
-        //ctx.putImageData(sobelImage, 0, 0);
+        ctx.putImageData(sobelImage, 0, 0);
     }
 });
