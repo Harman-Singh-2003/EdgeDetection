@@ -10,8 +10,7 @@ let range = 5;
 redraw.addEventListener('click', convert);
 
 sensitivity.addEventListener('change', () => {
-    range = sensitivity.value;
-    outputSens.innerText = `sensitivity: ${range}`;
+    range = 10 - sensitivity.value;
 });
 
 inputImage.addEventListener('change', (e) => {
@@ -113,7 +112,6 @@ function convert() {
     let finalImage = gaussianBlurImage;
 
     for (i = 0; i < gaussianBlurImage.data.length; i += 4) {
-        let sobelOperator = 0;
 
         if (!(((i / 4) + 1) <= (image1.width)) && !((((i / 4) + 1) <= 2 * (image1.width)) && (((i / 4) + 1) > (image1.width))) && !(((i / 4) + 1) > (image1.width) * (image1.height - 1)) && !(((i / 4) + 1) > (image1.width) * (image1.height - 2)) && !(((i / 4) + 1) % image1.width == 1) && !(((i / 4) + 1) % image1.width == 2) && !(((i / 4) + 1) % image1.width == 0) && !(((i / 4) + 1) % image1.width == image1.width - 1)) {
 
