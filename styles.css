@@ -11,7 +11,7 @@ body {
     display:flex;
     flex-direction: column;
     flex-grow: 1;
-    font-family:'Courier New', Courier, monospace;
+    font-family:sans-serif, 'Courier New', Courier, monospace;
     width: clamp(600px, 100%,1500px);
 }
 
@@ -26,18 +26,19 @@ body {
     justify-content: center;
     align-items: center;
     font-size:50px;
-    font-family: fantasy;
     color:white;
+    font-family:sans-serif, 'Courier New', Courier, monospace;
+    font-weight:bolder;
 }
 
 #footer{
     display:flex;
     flex-direction: column;
     align-items: center;
-    font-family: fantasy;
     color:white;
     font-size: 25px;
-    vertical-align: a;
+    font-family:sans-serif, 'Courier New', Courier, monospace;
+    font-weight:bolder;
 }
 
 #dashboard{
