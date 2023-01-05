@@ -1,40 +1,64 @@
-#canvas {
-    border: 4px solid blue;
-}
 
 body {
-    display: flex;
+    display:flex;
     flex-direction: column;
-    flex: 0 0 auto;
-    align-items: center;
+    min-height:100vh;
+    width: clamp(600px, 100%, 100%);
 }
 
-#body, #header, #footer{
-    width:clamp(700px, 100%, 100%)
+#main{
+    display:flex;
+    flex-direction: column;
+    flex-grow: 1;
+    font-family:'Courier New', Courier, monospace;
 }
 
-
-
-#body{
-    border: 2px solid green;
+#header, #footer{
+    display:flex;
+    background-color: rgb(127, 127, 127);
+    height:100px;
 }
 
 #header{
-    display:flex;
-    flex-direction:row;
-    padding:4px;
-    flex: 0 0 auto;
-    background-color: rgb(94, 180, 237);
     justify-content: center;
     align-items: center;
-    font-family:Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 50px;
+    font-size:50px;
+    font-family: fantasy;
+    color:white;
 }
 
-#footer{
+#dashboard{
     display:flex;
-    flex-direction:row;
-    padding:4px;
-    flex: 0 0 auto;
-    border: 3px solid yellow;
+    align-items: center;
+    justify-content: space-around;
+    margin:8px;
+}
+
+#info{
+    display:flex;
+    background-color: rgb(106, 214, 253);
+    width:50%;
+    padding:8px;
+    font-family:sans-serif;
+}
+
+b{
+    text-align: center;
+    margin-left: 20px;
+}
+
+#sensitivity-box{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#slider{
+    display:flex;
+}
+
+#inputImage{
+    width:200px;
+    margin-right: -20px;
 }
