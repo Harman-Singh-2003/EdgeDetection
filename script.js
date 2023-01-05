@@ -29,8 +29,6 @@ inputImage.addEventListener('change', (e) => {
 
     //Once the image is loaded by the browser, create the canvas
     image1.onload = function () {
-        canvas.height = image1.height;
-        canvas.width = image1.width;
         convert();
         redraw.style.visibility = 'visible';
     }
@@ -39,8 +37,26 @@ inputImage.addEventListener('change', (e) => {
 
 function convert() {
     //Drawing the original image since the way canvas works is by using the pixels that are visibly within the canvas itself since the only the RGB values of the pixels are saved
-    ctx.drawImage(image1, 0, 0, canvas.width, canvas.height);
-    const scannedImage = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let height = image1.height;
+    let width = image1.width;
+    const aspectRatio = image1.width/image1.height;
+
+    //Optimizing
+    //Checking if the image is over a resolution of 2k at a 16:9 aspect ratio. Images any larger will take far too long to run, so this is to optimize the process to give the end-result in a reasonable amount of time
+    if(image1.height * image1.width > 3686400){
+        height = Math.floor(Math.pow(3686400/aspectRatio, 0.5));
+        width = Math.floor(height*aspectRatio);
+    }
+
+    canvas.height = height;
+    canvas.width = width;
+
+    //Debugging
+    console.log(` Original: Height:${image1.height}, Width:${image1.width}, Ratio:${aspectRatio}`)
+    console.log(`Height: ${height}, Width:${width}, Ratio:${aspectRatio}`);
+
+    ctx.drawImage(image1, 0, 0, width, height);
+    const scannedImage = ctx.getImageData(0, 0, width, height);
 
     //Turning the image into greyscale
     const greyScaleImage = scannedImage;
@@ -73,52 +89,52 @@ function convert() {
     let gaussianBlurImage = greyScaleImage;
 
     //Going through each pixel in the greyscale image
-    for (i = 0; i < greyScaleImage.data.length; i += 4) {
+    for (i = 0; i < gaussianBlurImage.data.length; i += 4) {
         let tempNumber = 0;
         let xConversion = 0
         let yConversion = 0;
         let xLimit = 0;
         let yLimit = 0;
 
-        //All of this is logic that detects when the program is evaluating a pixel that is not surrounded by layer of 2 pixels on each side (outer and 2nd-most outer edge of pixels)
-        //and assigning values to compensate according. This reduces the accuracy of the blur near the edges
+        // All of this is logic that detects when the program is evaluating a pixel that is not surrounded by layer of 2 pixels on each side (outer and 2nd-most outer edge of pixels)
+        // and assigning values to compensate according. This reduces the accuracy of the blur near the edges
         //Top row
-        if (((i / 4) + 1) <= (image1.width)) {
+        if (((i / 4) + 1) <= (width)) {
             yConversion = 2;
         }
         //2nd top row
-        else if ((((i / 4) + 1) <= 2 * (image1.width)) && (((i / 4) + 1) > (image1.width))) {
+        else if ((((i / 4) + 1) <= 2 * (width)) && (((i / 4) + 1) > (width))) {
             yConversion = 1;
         }
         //Bottom row
-        if (((i / 4) + 1) > (image1.width) * (image1.height - 1)) {
+        if (((i / 4) + 1) > (width) * (height - 1)) {
             yLimit = 2;
         }
         //2nd bottom row
-        else if (((i / 4) + 1) > (image1.width) * (image1.height - 2)) {
+        else if (((i / 4) + 1) > (width) * (height - 2)) {
             yLimit = 1;
         }
         //left row
-        if (((i / 4) + 1) % image1.width == 1) {
+        if (((i / 4) + 1) % width == 1) {
             xConversion = 2;
         }
         //2nd left row
-        else if (((i / 4) + 1) % image1.width == 2) {
+        else if (((i / 4) + 1) % width == 2) {
             xConversion = 1;
         }
         //Right row
-        if (((i / 4) + 1) % image1.width == 0) {
+        if (((i / 4) + 1) % width == 0) {
             xLimit = 2;
         }
         //2nd Right row
-        else if (((i / 4) + 1) % image1.width == image1.width - 1) {
+        else if (((i / 4) + 1) % width == width - 1) {
             xLimit = 1;
         }
 
         //Running through the gaussian blur kernel and calcuting RGB values for each pixel
         for (j = 0 + yConversion; j < 5 - yLimit; j++) {
             for (k = 0 + xConversion; k < 5 - xLimit; k++) {
-                tempNumber += greyScaleImage.data[i + (k - 2) * 4 + (image1.width * 4) * (j - 2)] * gaussianBlurKernel[j][k];
+                tempNumber += greyScaleImage.data[i + (k - 2) * 4 + (width * 4) * (j - 2)] * gaussianBlurKernel[j][k];
             }
         }
 
@@ -134,9 +150,9 @@ function convert() {
     for (i = 0; i < gaussianBlurImage.data.length; i += 4) {
 
         //Not allowing the edge detection program to run on outer 2 edges of the image
-        if (!(((i / 4) + 1) <= (image1.width)) && !((((i / 4) + 1) <= 2 * (image1.width)) && (((i / 4) + 1) > (image1.width))) && !(((i / 4) + 1) > (image1.width) * (image1.height - 1)) && !(((i / 4) + 1) > (image1.width) * (image1.height - 2)) && !(((i / 4) + 1) % image1.width == 1) && !(((i / 4) + 1) % image1.width == 2) && !(((i / 4) + 1) % image1.width == 0) && !(((i / 4) + 1) % image1.width == image1.width - 1)) {
+        if (!(((i / 4) + 1) <= (width)) && !((((i / 4) + 1) <= 2 * (width)) && (((i / 4) + 1) > (width))) && !(((i / 4) + 1) > (width) * (height - 1)) && !(((i / 4) + 1) > (width) * (height - 2)) && !(((i / 4) + 1) % width == 1) && !(((i / 4) + 1) % width == 2) && !(((i / 4) + 1) % width == 0) && !(((i / 4) + 1) % width == width - 1)) {
             //Checking if the RGB value of the pixel to the right or below the current pixel are differing by the value of 'range'. The RGB values the same within a pixel since it's greyscale, so the comparison of only R is needed
-            if ((Math.abs(gaussianBlurImage.data[i] - gaussianBlurImage.data[i + 4]) > range) || (Math.abs(gaussianBlurImage.data[i] - gaussianBlurImage.data[i + image1.width * 4]) > range)) {
+            if ((Math.abs(gaussianBlurImage.data[i] - gaussianBlurImage.data[i + 4]) > range) || (Math.abs(gaussianBlurImage.data[i] - gaussianBlurImage.data[i + width * 4]) > range)) {
                 //Placing a white pixel where an 'edge' is detected
                 finalImage.data[i] = 255;
                 finalImage.data[i + 1] = 255;
